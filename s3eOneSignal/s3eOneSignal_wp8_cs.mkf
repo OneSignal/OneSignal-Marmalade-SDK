@@ -1,0 +1,16 @@
+# Builder mkf file for the c# portion of the s3eOneSignal extension on wp8
+
+options
+{
+   csproj=s3eOneSignalManaged
+	csprojDLLRef="incoming\wp8\OneSignalSDK.dll"
+	csprojDLLRef="incoming\wp8\Newtonsoft.Json.dll"
+}
+
+files
+{
+    (source/wp8)
+    AssemblyInfo.cs
+    s3eOneSignal.cs
+    
+}

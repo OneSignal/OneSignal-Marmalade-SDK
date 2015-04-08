@@ -1,0 +1,50 @@
+#!/usr/bin/env mkb
+
+options
+{
+   module_path=../s3eOneSignal
+}
+
+subproject ../s3eOneSignal/s3eOneSignal.mkf
+
+files
+{
+    ["Source"]
+    s3eOneSignalExample.cpp
+   
+   # iOS and WP8 custom notification sound
+   [Data]
+    (data)
+    notification.wav
+}
+
+deployments
+{
+   android-extra-manifest=OneSignalExtraManifest.xml
+   android-extra-strings='(gps_app_id, 999)'  ## required by google-play-services.
+
+   iphone-link-opts="-weak_framework UIKit"
+
+   wp8-custom-manifest=OneSignalCustomWP8Manifest.xml
+   wp8-custom-manifest-fill=0
+   wp8-extra-res="WP8/Icons=>"
+
+   # For Android custom notification sounds and icons
+   android-external-res="android/res"
+
+   # Android launcher icons
+   android-icon-mdpi="android/res/drawable-mdpi/ic_launcher.png"
+   android-icon-hdpi="android/res/drawable-hdpi/ic_launcher.png"
+   android-icon-xhdpi="android/res/drawable-xhdpi/ic_launcher.png"
+   android-icon-xxhdpi="android/res/drawable-xxhdpi/ic_launcher.png"
+   android-icon-xxxhdpi="android/res/drawable-xxxhdpi/ic_launcher.png"
+
+   # iOS Icons
+   iphone-icon-dir="iOS/AppIcons/"
+}
+
+# Required for Amazon ADM push notifications.
+assets
+{
+   android/assets/api_key.txt
+}

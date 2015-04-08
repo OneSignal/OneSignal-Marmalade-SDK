@@ -1,0 +1,125 @@
+#
+# (C) 2001-2012 Marmalade. All Rights Reserved.
+#
+# This document is protected by copyright, and contains information
+# proprietary to Marmalade.
+#
+# This file consists of source code released by Marmalade under
+# the terms of the accompanying End User License Agreement (EULA).
+# Please do not use this program/source code before you have read the
+# EULA and have agreed to be bound by its terms.
+#
+include:
+
+/**
+ * @addtogroup s3egroup
+ * @{
+ */
+
+/**
+ * @defgroup edkonesignalapigroup OneSignal Extension API Reference
+ *
+ * OneSignal is a free push notification service for mobile apps.
+ * This extension makes it easy to integrate your Marmalade game with OneSignal.
+ *
+ * @{
+ */
+
+#include <s3eTypes.h>
+
+typedef enum s3eGameThriveCallback
+{
+	S3E_GAMETHRIVE_CALLBACK_NOTIFICATION_RECEIVED,
+	S3E_GAMETHRIVE_CALLBACK_TAGS_RECEIVED,
+	S3E_GAMETHRIVE_CALLBACK_IDS_AVAILABLE,
+	S3E_GAMETHRIVE_CALLBACK_MAX
+} s3eGameThriveCallback;
+
+typedef enum s3eOneSignalCallback
+{
+	S3E_ONESIGNAL_CALLBACK_NOTIFICATION_RECEIVED,
+	S3E_ONESIGNAL_CALLBACK_TAGS_RECEIVED,
+	S3E_ONESIGNAL_CALLBACK_IDS_AVAILABLE,
+	S3E_ONESIGNAL_CALLBACK_MAX
+} s3eOneSignalCallback;
+
+
+typedef struct GameThriveNotificationReceivedResult
+{
+	const char*		m_Message;
+	const char*		m_AdditionalData;
+	s3eBool			m_isActive;
+
+} GameThriveNotificationReceivedResult;
+
+typedef struct OneSignalNotificationReceivedResult
+{
+	const char*		m_Message;
+	const char*		m_AdditionalData;
+	s3eBool			m_isActive;
+
+} OneSignalNotificationReceivedResult;
+
+
+typedef struct GameThriveTagsReceivedResult
+{
+	const char*	m_Tags;
+} GameThriveTagsReceivedResult;
+
+typedef struct OneSignalTagsReceivedResult
+{
+	const char*	m_Tags;
+} OneSignalTagsReceivedResult;
+
+
+typedef struct GameThriveIdsAvailableResult
+{
+	const char*	m_PlayerID;
+	const char*	m_PushToken;
+} GameThriveIdsAvailableResult;
+
+typedef struct OneSignalIdsAvailableResult
+{
+	const char*	m_UserID;
+	const char*	m_PushToken;
+} OneSignalIdsAvailableResult;
+
+
+typedef void (*GameThriveNotificationReceivedCallbackFn)(GameThriveNotificationReceivedResult* result, void* userData);
+typedef void (*GameThriveTagsReceivedCallbackFn)(GameThriveTagsReceivedResult* result, void* userData);
+typedef void (*GameThriveIdsAvailableCallbackFn)(GameThriveIdsAvailableResult* result, void* userData);
+
+typedef void (*OneSignalNotificationReceivedCallbackFn)(OneSignalNotificationReceivedResult* result, void* userData);
+typedef void (*OneSignalTagsReceivedCallbackFn)(OneSignalTagsReceivedResult* result, void* userData);
+typedef void (*OneSignalIdsAvailableCallbackFn)(OneSignalIdsAvailableResult* result, void* userData);
+
+functions:
+
+void GameThriveInitialize(const char* appId, const char* googleProjectNumber, GameThriveNotificationReceivedCallbackFn callbackFn, s3eBool autoRegister) 0 run_on_os_thread
+void GameThriveSendTag(const char* key, const char* value) 0 run_on_os_thread
+void GameThriveGetTags(GameThriveTagsReceivedCallbackFn callbackFn) 0 run_on_os_thread
+void GameThriveDeleteTag(const char* key) 0 run_on_os_thread
+void GameThriveSendPurchase(const double* amount) 0 run_on_os_thread
+void GameThriveGetIdsAvailable(GameThriveIdsAvailableCallbackFn callbackFn) 0 run_on_os_thread
+int GameThriveSystemPaused(void* systemData, void* userData) 0 run_on_os_thread
+int GameThriveSystemResume(void* systemData, void* userData) 0 run_on_os_thread
+void GameThriveRegisterForPushNotifications() 0 run_on_os_thread
+void GameThriveEnableVibrate(s3eBool enable) 0 run_on_os_thread
+void GameThriveEnableSound(s3eBool enable) 0 run_on_os_thread
+
+
+void OneSignalInitialize(const char* appId, const char* googleProjectNumber, OneSignalNotificationReceivedCallbackFn callbackFn, s3eBool autoRegister) 0 run_on_os_thread
+void OneSignalSendTag(const char* key, const char* value) 0 run_on_os_thread
+void OneSignalGetTags(OneSignalTagsReceivedCallbackFn callbackFn) 0 run_on_os_thread
+void OneSignalDeleteTag(const char* key) 0 run_on_os_thread
+void OneSignalSendPurchase(const double* amount) 0 run_on_os_thread
+void OneSignalGetIdsAvailable(OneSignalIdsAvailableCallbackFn callbackFn) 0 run_on_os_thread
+int OneSignalSystemPaused(void* systemData, void* userData) 0 run_on_os_thread
+int OneSignalSystemResume(void* systemData, void* userData) 0 run_on_os_thread
+void OneSignalRegisterForPushNotifications() 0 run_on_os_thread
+void OneSignalEnableVibrate(s3eBool enable) 0 run_on_os_thread
+void OneSignalEnableSound(s3eBool enable) 0 run_on_os_thread
+
+append:
+/** @} */
+/** @} */

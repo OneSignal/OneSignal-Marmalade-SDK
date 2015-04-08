@@ -1,0 +1,3 @@
+Put your Amazon API Key here to enable Amazon ADM push notifications.
+Follow our instructions to get this value and overrite this file.
+http://documentation.gamethrive.com/v1.0/docs/generating-adm-client-id-and-secret

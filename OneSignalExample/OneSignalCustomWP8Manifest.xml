@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?><Deployment AppPlatformVersion="8.0" xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment">
+  <DefaultLanguage xmlns="" code="en-US"/>
+  <App xmlns="" Author="Josh Kasten" Description="OneSignal description" Genre="apps.normal" ProductID="{47b35045-f1ac-3e3e-8d5e-662d34848ec7}" Publisher="OneSignal" PublisherID="{11111111-1111-1111-1111-111111111111}" RuntimeType="Silverlight" Title="OneSignalExample" Version="1.0.0.0">
+    <IconPath IsRelative="true" IsResource="false">Icons\ApplicationIcon.png</IconPath>
+    <Capabilities>
+      <Capability Name="ID_CAP_NETWORKING"/>
+      <Capability Name="ID_CAP_MEDIALIB_AUDIO"/>
+      <Capability Name="ID_CAP_MEDIALIB_PLAYBACK"/>
+      <Capability Name="ID_CAP_SENSORS"/>
+      <Capability Name="ID_CAP_WEBBROWSERCOMPONENT"/>
+      <Capability Name="ID_CAP_IDENTITY_DEVICE"/>
+      <Capability Name="ID_CAP_MEDIALIB_PHOTO"/>
+      <Capability Name="ID_CAP_MICROPHONE"/>
+      <Capability Name="ID_CAP_PUSH_NOTIFICATION"/>
+    </Capabilities>
+    <Tasks>
+      <DefaultTask Name="_default" NavigationPage="Marmalade.App;component/MainPage.xaml"/>
+    </Tasks>
+    <Tokens>
+      <PrimaryToken TaskName="_default" TokenID="Marmalade.AppToken">
+        <TemplateFlip>
+          <SmallImageURI IsRelative="true" IsResource="false">Icons\IconicTileSmall.png</SmallImageURI>
+          <Count>0</Count>
+          <BackgroundImageURI IsRelative="true" IsResource="false">Icons\IconicTileMediumLarge.png</BackgroundImageURI>
+          <Title>OneSignal Example</Title>
+          <BackContent></BackContent>
+          <BackBackgroundImageURI/>
+          <BackTitle></BackTitle>
+          <DeviceLockImageURI/>
+          <HasLarge>False</HasLarge>
+        </TemplateFlip>
+      </PrimaryToken>
+    </Tokens>
+    <ActivatableClasses>
+      <InProcessServer>
+        <Path>s3e_native.dll</Path>
+        <ActivatableClass ActivatableClassId="s3e_native.Direct3DInterop" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.RendererNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.RendererShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eAPIDataTypeWrapper" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eAccelerometerNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eAccelerometerShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eCameraCaptureNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eCameraCaptureShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eCameraNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eCameraShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eClipboardNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eClipboardShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eDebugNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eDebugShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eDeviceNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eDeviceShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eImagePickerNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eImagePickerShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eKeyboardNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eKeyboardShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eLoader" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eOSReadStringNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eOSReadStringShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3ePointerNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3ePointerShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eSoundRecordNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eSoundRecordShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eUIThreadRunnable" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eThreadNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eThreadShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eVideoNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eVideoShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.CApplicationReceiptDataRT" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.CProductReceiptDataRT" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eWindowsStoreBillingNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3e_native.s3eWindowsStoreBillingShim" ThreadingModel="both"/>
+      </InProcessServer>
+      <InProcessServer>
+        <Path>s3eOneSignalExtension.dll</Path>
+        <ActivatableClass ActivatableClassId="s3eOneSignalExtension.s3eOneSignalShim" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3eOneSignalExtension.s3eOneSignalNativeInterface" ThreadingModel="both"/>
+        <ActivatableClass ActivatableClassId="s3eOneSignalExtension.s3eOneSignalNative" ThreadingModel="both"/>
+      </InProcessServer>
+    </ActivatableClasses>
+    <ScreenResolutions>
+      <ScreenResolution Name="ID_RESOLUTION_WVGA"/>
+      <ScreenResolution Name="ID_RESOLUTION_WXGA"/>
+      <ScreenResolution Name="ID_RESOLUTION_HD720P"/>
+    </ScreenResolutions>
+  </App>
+</Deployment><!-- WPSDK Version 8.0.9900 -->
