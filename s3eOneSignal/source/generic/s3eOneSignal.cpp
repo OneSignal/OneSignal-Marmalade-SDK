@@ -129,3 +129,20 @@ void GameThriveEnableSound(s3eBool enable) {
 void OneSignalEnableSound(s3eBool enable) {
 	OneSignalEnableSound_platform(enable);
 }
+
+void OneSignalEnableInAppAlertNotification(s3eBool enable) {
+	OneSignalEnableInAppAlertNotification_platform(enable);
+}
+
+void OneSignalEnableNotificationsWhenActive(s3eBool enable) {
+	OneSignalEnableNotificationsWhenActive_platform(enable);
+}
+
+void OneSignalSetSubscription(s3eBool enable) {
+	OneSignalSetSubscription_platform(enable);
+}
+
+void OneSignalPostNotification(const char* jsonStr)
+{
+	OneSignalPostNotification_platform(jsonStr);
+}

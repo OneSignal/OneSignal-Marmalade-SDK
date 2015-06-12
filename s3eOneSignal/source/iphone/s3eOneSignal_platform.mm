@@ -45,6 +45,8 @@ BOOL mIsActive;
 
 void initOneSignalObject(NSDictionary* launchOptions, const char* appId, BOOL autoRegister) {
     if (oneSignal == nil) {
+        [OneSignal setValue:@"marmalade" forKey:@"mSDKType"];
+
         NSString* appIdStr = (appId ? [NSString stringWithUTF8String: appId] : nil);
         
         oneSignal = [[OneSignal alloc] initWithLaunchOptions:launchOptions appId:appIdStr handleNotification:^(NSString* message, NSDictionary* additionalData, BOOL isActive) {
@@ -245,12 +247,10 @@ void OneSignalGetIdsAvailable_platform(OneSignalIdsAvailableCallbackFn callbackF
 
 void OneSignalOnResume_platform() {
   // Only Applies to Android
-  //[oneSignal onFocus:@"resume"];
 }
 
 void OneSignalOnPause_platform() {
   // Only Applies to Android
-  //[oneSignal onFocus:@"suspend"];
 }
 
 void OneSignalRegisterForPushNotifications_platform() {
@@ -264,4 +264,21 @@ void OneSignalEnableVibrate_platform(s3eBool enable) {
 
 void OneSignalEnableSound_platform(s3eBool enable) {
   // Only Applies to Android
+}
+
+
+void OneSignalEnableInAppAlertNotification_platform(s3eBool enable) {
+  [oneSignal enableInAppAlertNotification:enable];
+}
+
+void OneSignalEnableNotificationsWhenActive_platform(s3eBool enable) {
+ // Only Applies to Android
+}
+
+void OneSignalSetSubscription_platform(s3eBool enable) {
+  [oneSignal setSubscription:enable];
+}
+
+void OneSignalPostNotification_platform(const char* jsonData) {
+  [oneSignal postNotificationWithJsonString:CreateNSString(jsonData)];
 }

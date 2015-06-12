@@ -78,8 +78,10 @@ namespace s3eOneSignalManaged
 		
         public void OneSignalInitialize_managed(string appId)
         {
-            OneSignal.Init(appId, (additionalData, isActive) => {
-                m_Native.CLR_TO_MARM_NotificationReceivedCallback((additionalData == null) ? "" : JObject.FromObject(additionalData).ToString(), isActive);
+            OneSignal.Init(appId, (message, additionalData, isActive) => {
+                m_Native.CLR_TO_MARM_NotificationReceivedCallback((message == null) ? "" : message,
+                                                                  (additionalData == null) ? "" : JObject.FromObject(additionalData).ToString(),
+                                                                  isActive);
             });
         }
 

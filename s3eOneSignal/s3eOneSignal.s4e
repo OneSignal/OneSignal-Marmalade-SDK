@@ -119,6 +119,10 @@ int OneSignalSystemResume(void* systemData, void* userData) 0 run_on_os_thread
 void OneSignalRegisterForPushNotifications() 0 run_on_os_thread
 void OneSignalEnableVibrate(s3eBool enable) 0 run_on_os_thread
 void OneSignalEnableSound(s3eBool enable) 0 run_on_os_thread
+void OneSignalEnableInAppAlertNotification(s3eBool enable) 0 run_on_os_thread
+void OneSignalEnableNotificationsWhenActive(s3eBool enable) 0 run_on_os_thread
+void OneSignalSetSubscription(s3eBool enable) 0 run_on_os_thread
+void OneSignalPostNotification(const char* jsonData) 0 run_on_os_thread
 
 append:
 /** @} */

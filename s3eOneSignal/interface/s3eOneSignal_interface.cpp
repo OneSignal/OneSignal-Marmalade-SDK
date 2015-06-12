@@ -11,68 +11,17 @@
 #include "s3eOneSignal.h"
 
 
+// Define S3E_EXT_SKIP_LOADER_CALL_LOCK on the user-side to skip LoaderCallStart/LoaderCallDone()-entry.
+// e.g. in s3eNUI this is used for generic user-side IwUI-based implementation.
 #ifndef S3E_EXT_SKIP_LOADER_CALL_LOCK
-// For MIPs (and WP8) platform we do not have asm code for stack switching
-// implemented. So we make LoaderCallStart call manually to set GlobalLock
-#if defined __mips || defined S3E_ANDROID_X86 || (defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP))
+#if defined I3D_ARCH_MIPS || defined S3E_ANDROID_X86 || (defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_PHONE_APP)) || defined I3D_ARCH_NACLX86_64
+// For platforms missing stack-switching (MIPS, WP8, Android-x86, NaCl, etc.) make loader-entry via LoaderCallStart/LoaderCallDone() on the user-side.
 #define LOADER_CALL_LOCK
 #endif
 #endif
 
-/**
- * Definitions for functions types passed to/from s3eExt interface
- */
-typedef       void(*GameThriveInitialize_t)(const char* appId, const char* googleProjectNumber, GameThriveNotificationReceivedCallbackFn callbackFn, s3eBool autoRegister);
-typedef       void(*GameThriveSendTag_t)(const char* key, const char* value);
-typedef       void(*GameThriveGetTags_t)(GameThriveTagsReceivedCallbackFn callbackFn);
-typedef       void(*GameThriveDeleteTag_t)(const char* key);
-typedef       void(*GameThriveSendPurchase_t)(const double* amount);
-typedef       void(*GameThriveGetIdsAvailable_t)(GameThriveIdsAvailableCallbackFn callbackFn);
-typedef        int(*GameThriveSystemPaused_t)(void* systemData, void* userData);
-typedef        int(*GameThriveSystemResume_t)(void* systemData, void* userData);
-typedef       void(*GameThriveRegisterForPushNotifications_t)();
-typedef       void(*GameThriveEnableVibrate_t)(s3eBool enable);
-typedef       void(*GameThriveEnableSound_t)(s3eBool enable);
-typedef       void(*OneSignalInitialize_t)(const char* appId, const char* googleProjectNumber, OneSignalNotificationReceivedCallbackFn callbackFn, s3eBool autoRegister);
-typedef       void(*OneSignalSendTag_t)(const char* key, const char* value);
-typedef       void(*OneSignalGetTags_t)(OneSignalTagsReceivedCallbackFn callbackFn);
-typedef       void(*OneSignalDeleteTag_t)(const char* key);
-typedef       void(*OneSignalSendPurchase_t)(const double* amount);
-typedef       void(*OneSignalGetIdsAvailable_t)(OneSignalIdsAvailableCallbackFn callbackFn);
-typedef        int(*OneSignalSystemPaused_t)(void* systemData, void* userData);
-typedef        int(*OneSignalSystemResume_t)(void* systemData, void* userData);
-typedef       void(*OneSignalRegisterForPushNotifications_t)();
-typedef       void(*OneSignalEnableVibrate_t)(s3eBool enable);
-typedef       void(*OneSignalEnableSound_t)(s3eBool enable);
 
-/**
- * struct that gets filled in by s3eOneSignalRegister
- */
-typedef struct s3eOneSignalFuncs
-{
-    GameThriveInitialize_t m_GameThriveInitialize;
-    GameThriveSendTag_t m_GameThriveSendTag;
-    GameThriveGetTags_t m_GameThriveGetTags;
-    GameThriveDeleteTag_t m_GameThriveDeleteTag;
-    GameThriveSendPurchase_t m_GameThriveSendPurchase;
-    GameThriveGetIdsAvailable_t m_GameThriveGetIdsAvailable;
-    GameThriveSystemPaused_t m_GameThriveSystemPaused;
-    GameThriveSystemResume_t m_GameThriveSystemResume;
-    GameThriveRegisterForPushNotifications_t m_GameThriveRegisterForPushNotifications;
-    GameThriveEnableVibrate_t m_GameThriveEnableVibrate;
-    GameThriveEnableSound_t m_GameThriveEnableSound;
-    OneSignalInitialize_t m_OneSignalInitialize;
-    OneSignalSendTag_t m_OneSignalSendTag;
-    OneSignalGetTags_t m_OneSignalGetTags;
-    OneSignalDeleteTag_t m_OneSignalDeleteTag;
-    OneSignalSendPurchase_t m_OneSignalSendPurchase;
-    OneSignalGetIdsAvailable_t m_OneSignalGetIdsAvailable;
-    OneSignalSystemPaused_t m_OneSignalSystemPaused;
-    OneSignalSystemResume_t m_OneSignalSystemResume;
-    OneSignalRegisterForPushNotifications_t m_OneSignalRegisterForPushNotifications;
-    OneSignalEnableVibrate_t m_OneSignalEnableVibrate;
-    OneSignalEnableSound_t m_OneSignalEnableSound;
-} s3eOneSignalFuncs;
+#include "s3eOneSignal_interface.h"
 
 static s3eOneSignalFuncs g_Ext;
 static bool g_GotExt = false;
@@ -125,13 +74,13 @@ void GameThriveInitialize(const char* appId, const char* googleProjectNumber, Ga
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveInitialize);
 #endif
 
     g_Ext.m_GameThriveInitialize(appId, googleProjectNumber, callbackFn, autoRegister);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveInitialize);
 #endif
 
     return;
@@ -145,13 +94,13 @@ void GameThriveSendTag(const char* key, const char* value)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveSendTag);
 #endif
 
     g_Ext.m_GameThriveSendTag(key, value);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveSendTag);
 #endif
 
     return;
@@ -165,13 +114,13 @@ void GameThriveGetTags(GameThriveTagsReceivedCallbackFn callbackFn)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveGetTags);
 #endif
 
     g_Ext.m_GameThriveGetTags(callbackFn);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveGetTags);
 #endif
 
     return;
@@ -185,13 +134,13 @@ void GameThriveDeleteTag(const char* key)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveDeleteTag);
 #endif
 
     g_Ext.m_GameThriveDeleteTag(key);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveDeleteTag);
 #endif
 
     return;
@@ -205,13 +154,13 @@ void GameThriveSendPurchase(const double* amount)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveSendPurchase);
 #endif
 
     g_Ext.m_GameThriveSendPurchase(amount);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveSendPurchase);
 #endif
 
     return;
@@ -225,13 +174,13 @@ void GameThriveGetIdsAvailable(GameThriveIdsAvailableCallbackFn callbackFn)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveGetIdsAvailable);
 #endif
 
     g_Ext.m_GameThriveGetIdsAvailable(callbackFn);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveGetIdsAvailable);
 #endif
 
     return;
@@ -245,13 +194,13 @@ int GameThriveSystemPaused(void* systemData, void* userData)
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveSystemPaused);
 #endif
 
     int ret = g_Ext.m_GameThriveSystemPaused(systemData, userData);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveSystemPaused);
 #endif
 
     return ret;
@@ -265,13 +214,13 @@ int GameThriveSystemResume(void* systemData, void* userData)
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveSystemResume);
 #endif
 
     int ret = g_Ext.m_GameThriveSystemResume(systemData, userData);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveSystemResume);
 #endif
 
     return ret;
@@ -285,13 +234,13 @@ void GameThriveRegisterForPushNotifications()
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveRegisterForPushNotifications);
 #endif
 
     g_Ext.m_GameThriveRegisterForPushNotifications();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveRegisterForPushNotifications);
 #endif
 
     return;
@@ -305,13 +254,13 @@ void GameThriveEnableVibrate(s3eBool enable)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveEnableVibrate);
 #endif
 
     g_Ext.m_GameThriveEnableVibrate(enable);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveEnableVibrate);
 #endif
 
     return;
@@ -325,13 +274,13 @@ void GameThriveEnableSound(s3eBool enable)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_GameThriveEnableSound);
 #endif
 
     g_Ext.m_GameThriveEnableSound(enable);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_GameThriveEnableSound);
 #endif
 
     return;
@@ -345,13 +294,13 @@ void OneSignalInitialize(const char* appId, const char* googleProjectNumber, One
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalInitialize);
 #endif
 
     g_Ext.m_OneSignalInitialize(appId, googleProjectNumber, callbackFn, autoRegister);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalInitialize);
 #endif
 
     return;
@@ -365,13 +314,13 @@ void OneSignalSendTag(const char* key, const char* value)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalSendTag);
 #endif
 
     g_Ext.m_OneSignalSendTag(key, value);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalSendTag);
 #endif
 
     return;
@@ -385,13 +334,13 @@ void OneSignalGetTags(OneSignalTagsReceivedCallbackFn callbackFn)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalGetTags);
 #endif
 
     g_Ext.m_OneSignalGetTags(callbackFn);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalGetTags);
 #endif
 
     return;
@@ -405,13 +354,13 @@ void OneSignalDeleteTag(const char* key)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalDeleteTag);
 #endif
 
     g_Ext.m_OneSignalDeleteTag(key);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalDeleteTag);
 #endif
 
     return;
@@ -425,13 +374,13 @@ void OneSignalSendPurchase(const double* amount)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalSendPurchase);
 #endif
 
     g_Ext.m_OneSignalSendPurchase(amount);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalSendPurchase);
 #endif
 
     return;
@@ -445,13 +394,13 @@ void OneSignalGetIdsAvailable(OneSignalIdsAvailableCallbackFn callbackFn)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalGetIdsAvailable);
 #endif
 
     g_Ext.m_OneSignalGetIdsAvailable(callbackFn);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalGetIdsAvailable);
 #endif
 
     return;
@@ -465,13 +414,13 @@ int OneSignalSystemPaused(void* systemData, void* userData)
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalSystemPaused);
 #endif
 
     int ret = g_Ext.m_OneSignalSystemPaused(systemData, userData);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalSystemPaused);
 #endif
 
     return ret;
@@ -485,13 +434,13 @@ int OneSignalSystemResume(void* systemData, void* userData)
         return 0;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalSystemResume);
 #endif
 
     int ret = g_Ext.m_OneSignalSystemResume(systemData, userData);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalSystemResume);
 #endif
 
     return ret;
@@ -505,13 +454,13 @@ void OneSignalRegisterForPushNotifications()
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalRegisterForPushNotifications);
 #endif
 
     g_Ext.m_OneSignalRegisterForPushNotifications();
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalRegisterForPushNotifications);
 #endif
 
     return;
@@ -525,13 +474,13 @@ void OneSignalEnableVibrate(s3eBool enable)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalEnableVibrate);
 #endif
 
     g_Ext.m_OneSignalEnableVibrate(enable);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalEnableVibrate);
 #endif
 
     return;
@@ -545,13 +494,93 @@ void OneSignalEnableSound(s3eBool enable)
         return;
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallStart(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalEnableSound);
 #endif
 
     g_Ext.m_OneSignalEnableSound(enable);
 
 #ifdef LOADER_CALL_LOCK
-    s3eDeviceLoaderCallDone(S3E_TRUE, NULL);
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalEnableSound);
+#endif
+
+    return;
+}
+
+void OneSignalEnableInAppAlertNotification(s3eBool enable)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal[22] func: OneSignalEnableInAppAlertNotification"));
+
+    if (!_extLoad())
+        return;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalEnableInAppAlertNotification);
+#endif
+
+    g_Ext.m_OneSignalEnableInAppAlertNotification(enable);
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalEnableInAppAlertNotification);
+#endif
+
+    return;
+}
+
+void OneSignalEnableNotificationsWhenActive(s3eBool enable)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal[23] func: OneSignalEnableNotificationsWhenActive"));
+
+    if (!_extLoad())
+        return;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalEnableNotificationsWhenActive);
+#endif
+
+    g_Ext.m_OneSignalEnableNotificationsWhenActive(enable);
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalEnableNotificationsWhenActive);
+#endif
+
+    return;
+}
+
+void OneSignalSetSubscription(s3eBool enable)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal[24] func: OneSignalSetSubscription"));
+
+    if (!_extLoad())
+        return;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalSetSubscription);
+#endif
+
+    g_Ext.m_OneSignalSetSubscription(enable);
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalSetSubscription);
+#endif
+
+    return;
+}
+
+void OneSignalPostNotification(const char* jsonData)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal[25] func: OneSignalPostNotification"));
+
+    if (!_extLoad())
+        return;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalPostNotification);
+#endif
+
+    g_Ext.m_OneSignalPostNotification(jsonData);
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalPostNotification);
 #endif
 
     return;

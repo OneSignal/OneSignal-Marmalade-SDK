@@ -27,6 +27,7 @@ class s3eOneSignal implements NotificationOpenedHandler {
 
     public void OneSignalInitialize(String appId, String googleProjectNumber, boolean autoRegister) {
 		if (!inited) {
+			OneSignal.sdkType = "marmalade";
 			OneSignal.init((Activity)LoaderActivity.m_Activity, googleProjectNumber, appId, this);
 			inited = true;
 		}
@@ -55,7 +56,7 @@ class s3eOneSignal implements NotificationOpenedHandler {
 		});
     }
 	
-    public void OneSignalDeleteTag(String key, String value) {
+    public void OneSignalDeleteTag(String key) {
         OneSignal.deleteTag(key);
     }
 	
@@ -92,6 +93,22 @@ class s3eOneSignal implements NotificationOpenedHandler {
 	public void OneSignalEnableSound(boolean enable) {
 		OneSignal.enableSound(enable);
 	}
+
+	public void OneSignalEnableInAppAlertNotification(boolean enable) {
+		OneSignal.enableInAppAlertNotification(enable);
+	}
+
+	public void OneSignalEnableNotificationsWhenActive(boolean enable) {
+		OneSignal.enableNotificationsWhenActive(enable);
+	}
+
+	public void OneSignalSetSubscription(boolean enable) {
+		OneSignal.setSubscription(enable);
+	}
+	
+	public void OneSignalPostNotification(String jsonStr) {
+		OneSignal.postNotification(jsonStr, null);
+    }
 	
 	public native void NotificationReceivedCallback(String message, String additionalData, boolean isActive);
 	public native void IdsAvailableCallback(String userID, String pushToken);

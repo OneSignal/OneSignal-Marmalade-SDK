@@ -150,6 +150,14 @@ void OneSignalEnableVibrate(s3eBool enable);
 
 void OneSignalEnableSound(s3eBool enable);
 
+void OneSignalEnableInAppAlertNotification(s3eBool enable);
+
+void OneSignalEnableNotificationsWhenActive(s3eBool enable);
+
+void OneSignalSetSubscription(s3eBool enable);
+
+void OneSignalPostNotification(const char* jsonData);
+
 // \cond HIDDEN_DEFINES
 S3E_END_C_DECL
 // \endcond

@@ -129,12 +129,28 @@ void OneSignalEnableSound_platform(s3eBool enable) {
 	// For Android Only
 }
 
+void OneSignalEnableInAppAlertNotification_platform(s3eBool enable) {
+    // Not supported by the native SDK
+}
+
+void OneSignalEnableNotificationsWhenActive_platform(s3eBool enable) {
+   // For Android Only
+}
+
+void OneSignalSetSubscription_platform(s3eBool enable) {
+    // Not supported by the native SDK
+}
+
+void OneSignalPostNotification_platform(const char* jsonData) {
+    // Not supported by the native SDK
+}
+
 
 // The following 3 functions are called from the shim which was called from the .NET CLR
-void NotificationReceivedCallback(const char* additionalData, bool isActive) {
+void NotificationReceivedCallback(const char* message, const char* additionalData, bool isActive) {
 
 	OneSignalNotificationReceivedResult result;
-	result.m_Message = NULL;
+	result.m_Message = message;
 	result.m_AdditionalData = additionalData;
 	result.m_isActive = isActive;
 

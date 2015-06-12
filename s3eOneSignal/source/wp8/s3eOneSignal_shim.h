@@ -47,17 +47,26 @@ public ref class s3eOneSignalNativeInterface sealed : public s3e_native::INative
 public:
     s3eOneSignalNativeInterface() {}
 
-	void CLR_TO_MARM_NotificationReceivedCallback(Platform::String^ additionalData, bool isActive) {
+	void CLR_TO_MARM_NotificationReceivedCallback(Platform::String^ message, Platform::String^ additionalData, bool isActive) {
 		char* buff;
 		
-		if (!additionalData->IsEmpty()) {
+		if (!message->IsEmpty()) {
 			buff = new char[4096];
-			StringToUTF8(buff, 4096, additionalData);
+			StringToUTF8(buff, 4096, message);
 		}
 		else
 			buff = 0;
+    
+		char* buff2;
+		
+		if (!additionalData->IsEmpty()) {
+			buff2 = new char[4096];
+			StringToUTF8(buff2, 4096, additionalData);
+		}
+		else
+			buff2 = 0;
 
-		NotificationReceivedCallback(buff, isActive);
+		NotificationReceivedCallback(buff, buff2, isActive);
 	}
 
 	void CLR_TO_MARM_TagsReceivedCallback(Platform::String^ tags) {

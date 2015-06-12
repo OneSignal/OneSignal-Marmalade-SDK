@@ -156,35 +156,89 @@ static void OneSignalEnableSound_wrap(s3eBool enable)
     s3eEdkThreadRunOnOS((s3eEdkThreadFunc)OneSignalEnableSound, 1, enable);
 }
 
+static void OneSignalEnableInAppAlertNotification_wrap(s3eBool enable)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal func on main thread: OneSignalEnableInAppAlertNotification"));
+    s3eEdkThreadRunOnOS((s3eEdkThreadFunc)OneSignalEnableInAppAlertNotification, 1, enable);
+}
+
+static void OneSignalEnableNotificationsWhenActive_wrap(s3eBool enable)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal func on main thread: OneSignalEnableNotificationsWhenActive"));
+    s3eEdkThreadRunOnOS((s3eEdkThreadFunc)OneSignalEnableNotificationsWhenActive, 1, enable);
+}
+
+static void OneSignalSetSubscription_wrap(s3eBool enable)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal func on main thread: OneSignalSetSubscription"));
+    s3eEdkThreadRunOnOS((s3eEdkThreadFunc)OneSignalSetSubscription, 1, enable);
+}
+
+static void OneSignalPostNotification_wrap(const char* jsonData)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal func on main thread: OneSignalPostNotification"));
+    s3eEdkThreadRunOnOS((s3eEdkThreadFunc)OneSignalPostNotification, 1, jsonData);
+}
+
 #define GameThriveInitialize GameThriveInitialize_wrap
+
 #define GameThriveSendTag GameThriveSendTag_wrap
+
 #define GameThriveGetTags GameThriveGetTags_wrap
+
 #define GameThriveDeleteTag GameThriveDeleteTag_wrap
+
 #define GameThriveSendPurchase GameThriveSendPurchase_wrap
+
 #define GameThriveGetIdsAvailable GameThriveGetIdsAvailable_wrap
+
 #define GameThriveSystemPaused GameThriveSystemPaused_wrap
+
 #define GameThriveSystemResume GameThriveSystemResume_wrap
+
 #define GameThriveRegisterForPushNotifications GameThriveRegisterForPushNotifications_wrap
+
 #define GameThriveEnableVibrate GameThriveEnableVibrate_wrap
+
 #define GameThriveEnableSound GameThriveEnableSound_wrap
+
 #define OneSignalInitialize OneSignalInitialize_wrap
+
 #define OneSignalSendTag OneSignalSendTag_wrap
+
 #define OneSignalGetTags OneSignalGetTags_wrap
+
 #define OneSignalDeleteTag OneSignalDeleteTag_wrap
+
 #define OneSignalSendPurchase OneSignalSendPurchase_wrap
+
 #define OneSignalGetIdsAvailable OneSignalGetIdsAvailable_wrap
+
 #define OneSignalSystemPaused OneSignalSystemPaused_wrap
+
 #define OneSignalSystemResume OneSignalSystemResume_wrap
+
 #define OneSignalRegisterForPushNotifications OneSignalRegisterForPushNotifications_wrap
+
 #define OneSignalEnableVibrate OneSignalEnableVibrate_wrap
+
 #define OneSignalEnableSound OneSignalEnableSound_wrap
+
+#define OneSignalEnableInAppAlertNotification OneSignalEnableInAppAlertNotification_wrap
+
+#define OneSignalEnableNotificationsWhenActive OneSignalEnableNotificationsWhenActive_wrap
+
+#define OneSignalSetSubscription OneSignalSetSubscription_wrap
+
+#define OneSignalPostNotification OneSignalPostNotification_wrap
+
 
 #endif
 
 void s3eOneSignalRegisterExt()
 {
     /* fill in the function pointer struct for this extension */
-    void* funcPtrs[22];
+    void* funcPtrs[26];
     funcPtrs[0] = (void*)GameThriveInitialize;
     funcPtrs[1] = (void*)GameThriveSendTag;
     funcPtrs[2] = (void*)GameThriveGetTags;
@@ -207,11 +261,15 @@ void s3eOneSignalRegisterExt()
     funcPtrs[19] = (void*)OneSignalRegisterForPushNotifications;
     funcPtrs[20] = (void*)OneSignalEnableVibrate;
     funcPtrs[21] = (void*)OneSignalEnableSound;
+    funcPtrs[22] = (void*)OneSignalEnableInAppAlertNotification;
+    funcPtrs[23] = (void*)OneSignalEnableNotificationsWhenActive;
+    funcPtrs[24] = (void*)OneSignalSetSubscription;
+    funcPtrs[25] = (void*)OneSignalPostNotification;
 
     /*
      * Flags that specify the extension's use of locking and stackswitching
      */
-    int flags[22] = { 0 };
+    int flags[26] = { 0 };
 
     /*
      * Register the extension

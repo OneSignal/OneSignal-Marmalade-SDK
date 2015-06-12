@@ -46,10 +46,8 @@ void GameThriveInitialize_platform(const char* appId, const char* googleProjectN
 void OneSignalInitialize_platform(const char* appId, const char* googleProjectNumber, OneSignalNotificationReceivedCallbackFn callbackFn, s3eBool autoRegister);
 
 void OneSignalSendTag_platform(const char* key, const char* value);
-
 void GameThriveGetTags_platform(GameThriveTagsReceivedCallbackFn callbackFn);
 void OneSignalGetTags_platform(OneSignalTagsReceivedCallbackFn callbackFn);
-
 void OneSignalDeleteTag_platform(const char* key);
 
 void OneSignalSendPurchase_platform(const double* amount);
@@ -58,18 +56,22 @@ void GameThriveGetIdsAvailable_platform(GameThriveIdsAvailableCallbackFn callbac
 void OneSignalGetIdsAvailable_platform(OneSignalIdsAvailableCallbackFn callbackFn);
 
 int OneSignalSystemPaused_platform(void* systemData, void* userData);
-
 int OneSignalSystemResume_platform(void* systemData, void* userData);
 
 void OneSignalOnPause_platform();
-
 void OneSignalOnResume_platform();
 
 void OneSignalRegisterForPushNotifications_platform();
 
 void OneSignalEnableVibrate_platform(s3eBool enable);
-
 void OneSignalEnableSound_platform(s3eBool enable);
+
+void OneSignalEnableInAppAlertNotification_platform(s3eBool enable);
+void OneSignalEnableNotificationsWhenActive_platform(s3eBool enable);
+
+void OneSignalSetSubscription_platform(s3eBool enable);
+
+void OneSignalPostNotification_platform(const char* key);
 
 
 #endif /* !S3EONESIGNAL_INTERNAL_H */

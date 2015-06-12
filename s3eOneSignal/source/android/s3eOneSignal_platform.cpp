@@ -31,6 +31,10 @@ static jmethodID g_OneSignalOnPause;
 static jmethodID g_OneSignalOnResume;
 static jmethodID g_OneSignalEnableVibrate;
 static jmethodID g_OneSignalEnableSound;
+static jmethodID g_OneSignalEnableInAppAlertNotification;
+static jmethodID g_OneSignalEnableNotificationsWhenActive;
+static jmethodID g_OneSignalSetSubscription;
+static jmethodID g_OneSignalPostNotification;
 
 s3eResult s3eOneSignalInit_platform()
 {
@@ -77,7 +81,7 @@ s3eResult s3eOneSignalInit_platform()
     if (!g_OneSignalGetTags)
         goto fail;
 
-    g_OneSignalDeleteTag = env->GetMethodID(cls, "OneSignalDeleteTag", "(Ljava/lang/String;Ljava/lang/String;)V");
+    g_OneSignalDeleteTag = env->GetMethodID(cls, "OneSignalDeleteTag", "(Ljava/lang/String;)V");
     if (!g_OneSignalDeleteTag)
         goto fail;
 
@@ -104,6 +108,23 @@ s3eResult s3eOneSignalInit_platform()
     g_OneSignalEnableSound = env->GetMethodID(cls, "OneSignalEnableSound", "(Z)V");
     if (!g_OneSignalEnableSound)
         goto fail;
+
+    g_OneSignalEnableInAppAlertNotification = env->GetMethodID(cls, "OneSignalEnableInAppAlertNotification", "(Z)V");
+    if (!g_OneSignalEnableInAppAlertNotification)
+        goto fail;
+    
+    g_OneSignalEnableNotificationsWhenActive = env->GetMethodID(cls, "OneSignalEnableNotificationsWhenActive", "(Z)V");
+    if (!g_OneSignalEnableNotificationsWhenActive)
+        goto fail;
+
+    g_OneSignalSetSubscription = env->GetMethodID(cls, "OneSignalSetSubscription", "(Z)V");
+    if (!g_OneSignalSetSubscription)
+        goto fail;
+
+    g_OneSignalPostNotification = env->GetMethodID(cls, "OneSignalPostNotification", "(Ljava/lang/String;)V");
+    if (!g_OneSignalPostNotification)
+        goto fail;
+
 
     IwTrace(ONESIGNAL, ("ONESIGNAL init success"));
     g_Obj = env->NewGlobalRef(obj);
@@ -319,18 +340,31 @@ void OneSignalRegisterForPushNotifications_platform() {
 
 void OneSignalEnableVibrate_platform(s3eBool enable) {
 	JNIEnv* env = s3eEdkJNIGetEnv();
-    
-    if (enable == S3E_FALSE)
-    	env->CallVoidMethod(g_Obj, g_OneSignalEnableVibrate, JNI_FALSE);
-    else
-    	env->CallVoidMethod(g_Obj, g_OneSignalEnableVibrate, JNI_TRUE);
+    env->CallVoidMethod(g_Obj, g_OneSignalEnableVibrate, enable == S3E_TRUE ? JNI_TRUE : JNI_FALSE);
 }
 
 void OneSignalEnableSound_platform(s3eBool enable) {
 	JNIEnv* env = s3eEdkJNIGetEnv();
-    
-    if (enable == S3E_FALSE)
-    	env->CallVoidMethod(g_Obj, g_OneSignalEnableSound, JNI_FALSE);
-    else
-    	env->CallVoidMethod(g_Obj, g_OneSignalEnableSound, JNI_TRUE);
+    env->CallVoidMethod(g_Obj, g_OneSignalEnableSound, enable == S3E_TRUE ? JNI_TRUE : JNI_FALSE);
+}
+
+void OneSignalEnableInAppAlertNotification_platform(s3eBool enable) {
+    JNIEnv* env = s3eEdkJNIGetEnv();
+    env->CallVoidMethod(g_Obj, g_OneSignalEnableInAppAlertNotification, enable == S3E_TRUE ? JNI_TRUE : JNI_FALSE);
+}
+
+void OneSignalEnableNotificationsWhenActive_platform(s3eBool enable) {
+    JNIEnv* env = s3eEdkJNIGetEnv();
+    env->CallVoidMethod(g_Obj, g_OneSignalEnableNotificationsWhenActive, enable == S3E_TRUE ? JNI_TRUE : JNI_FALSE);
+}
+
+void OneSignalSetSubscription_platform(s3eBool enable) {
+    JNIEnv* env = s3eEdkJNIGetEnv();
+    env->CallVoidMethod(g_Obj, g_OneSignalSetSubscription, enable == S3E_TRUE ? JNI_TRUE : JNI_FALSE);
+}
+
+void OneSignalPostNotification_platform(const char* jsonData) {
+    JNIEnv* env = s3eEdkJNIGetEnv();
+    jstring jsonData_jstr = env->NewStringUTF(jsonData);
+    env->CallVoidMethod(g_Obj, g_OneSignalPostNotification, jsonData_jstr);
 }
