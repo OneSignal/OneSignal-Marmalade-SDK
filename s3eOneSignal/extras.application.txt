@@ -1,4 +1,4 @@
-<activity android:name="com.onesignal.NotificationOpenedActivity" android:theme="@android:style/Theme.NoDisplay" />
+<receiver android:name="com.onesignal.NotificationOpenedReceiver" />
 <receiver 
 	android:name="com.onesignal.GcmBroadcastReceiver"
 	android:permission="com.google.android.c2dm.permission.SEND" >
@@ -8,6 +8,8 @@
 	</intent-filter>
 </receiver>
 <service android:name="com.onesignal.GcmIntentService" />
+<service android:name="com.onesignal.SyncService" android:stopWithTask="false" />
+<activity android:name="com.onesignal.PermissionsActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
 
 <amazon:enable-feature android:name="com.amazon.device.messaging" android:required="false" xmlns:amazon="http://schemas.amazon.com/apk/res/android" />
