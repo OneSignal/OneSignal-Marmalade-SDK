@@ -6,3 +6,14 @@ IW_TRACE_CHANNEL_ONESIGNAL s3eOneSignal Extension trace channel
 IW_TRACE_CHANNEL_ONESIGNAL_VERBOSE s3eOneSignal Extension verbose trace channel
 IW_ASSERTION_CHANNEL_ONESIGNAL s3eOneSignal Extension assertion channel
 S3E_EXT_ONESIGNAL  Defined when s3eOneSignal extension is being built or used
+S3E_EXT_ONESIGNAL_DISABLE If defined, s3eOneSignal is ommitted from all deployments
+S3E_EXT_ONESIGNAL_DISABLE_ON_IPHONE If defined, s3eOneSignal is ommitted from deployments to iphone
+S3E_EXT_ONESIGNAL_DISABLE_ON_WINDOWS If defined, s3eOneSignal is ommitted from deployments to windows
+S3E_EXT_ONESIGNAL_DISABLE_ON_ANDROID If defined, s3eOneSignal is ommitted from deployments to android
+S3E_EXT_ONESIGNAL_DISABLE_ON_OSX If defined, s3eOneSignal is ommitted from deployments to osx
+S3E_EXT_ONESIGNAL_DISABLE_ON_LINUX If defined, s3eOneSignal is ommitted from deployments to linux
+S3E_EXT_ONESIGNAL_DISABLE_ON_WP8 If defined, s3eOneSignal is ommitted from deployments to wp8
+S3E_EXT_ONESIGNAL_DISABLE_ON_WS8 If defined, s3eOneSignal is ommitted from deployments to ws8
+S3E_EXT_ONESIGNAL_DISABLE_ON_WS81 If defined, s3eOneSignal is ommitted from deployments to ws81
+S3E_EXT_ONESIGNAL_DISABLE_ON_WP81 If defined, s3eOneSignal is ommitted from deployments to wp81
+S3E_EXT_ONESIGNAL_DISABLE_ON_WIN10 If defined, s3eOneSignal is ommitted from deployments to win10

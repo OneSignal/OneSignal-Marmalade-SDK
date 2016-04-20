@@ -12,7 +12,7 @@ These functions are called via JNI from native code.
 import com.ideaworks3d.marmalade.LoaderAPI;
 import com.ideaworks3d.marmalade.LoaderActivity;
 
-import 	android.app.Activity;
+import android.content.Context;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +28,7 @@ class s3eOneSignal implements NotificationOpenedHandler {
     public void OneSignalInitialize(String appId, String googleProjectNumber, boolean autoRegister) {
 		if (!inited) {
 			OneSignal.sdkType = "marmalade";
-			OneSignal.init((Activity)LoaderActivity.m_Activity, googleProjectNumber, appId, this);
+			OneSignal.init((Context)LoaderActivity.m_Activity, googleProjectNumber, appId, this);
 			inited = true;
 		}
     }

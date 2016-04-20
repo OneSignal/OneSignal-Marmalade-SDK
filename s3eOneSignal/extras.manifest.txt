@@ -10,3 +10,13 @@
 
 <permission android:name="${PACKAGENAME}.permission.RECEIVE_ADM_MESSAGE" android:protectionLevel="signature" />
 <uses-permission android:name="${PACKAGENAME}.permission.RECEIVE_ADM_MESSAGE" />
+
+<!-- START: ShortcutBadger -->
+<uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
+<uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
+<uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS"/>
+<uses-permission android:name="com.htc.launcher.permission.UPDATE_SHORTCUT"/>
+<uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE"/>
+<uses-permission android:name="com.anddoes.launcher.permission.UPDATE_COUNT"/>
+<uses-permission android:name="com.majeur.launcher.permission.UPDATE_BADGE"/>
+<!-- End: ShortcutBadger -->

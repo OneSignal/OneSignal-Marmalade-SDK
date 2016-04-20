@@ -51,7 +51,8 @@ void initOneSignalObject(NSDictionary* launchOptions, const char* appId, BOOL au
         
         oneSignal = [[OneSignal alloc] initWithLaunchOptions:launchOptions appId:appIdStr handleNotification:^(NSString* message, NSDictionary* additionalData, BOOL isActive) {
             mAlertMessage = message;
-            mAdditionalData = additionalData;
+            // Need to deep copy as we will be going accoss threads.
+            mAdditionalData = (NSDictionary *)CFPropertyListCreateDeepCopy(kCFAllocatorDefault, (CFDictionaryRef)additionalData, kCFPropertyListMutableContainers);
             mIsActive = isActive;
             
             if (marmInitDone)
@@ -119,6 +120,7 @@ void processNotificationOpened() {
     
     if (mAdditionalData)
         result.m_AdditionalData = dictionaryToJsonChar(mAdditionalData);
+    
     result.m_isActive = mIsActive;
     
     s3eEdkCallbacksEnqueue(S3E_DEVICE_ONESIGNAL,

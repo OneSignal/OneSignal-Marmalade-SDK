@@ -102,7 +102,8 @@ S3E_BEGIN_C_DECL
 // \endcond
 
 /**
- * Returns S3E_TRUE if the OneSignal extension is available.
+ * Report if the OneSignal extension is available.
+ * @return S3E_TRUE if the OneSignal extension is available. S3E_FALSE otherwise.
  */
 s3eBool s3eOneSignalAvailable();
 
