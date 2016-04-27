@@ -585,3 +585,23 @@ void OneSignalPostNotification(const char* jsonData)
 
     return;
 }
+
+void OneSignalPostNotificationWithCallback(const char* jsonData, OneSignalPostNotificationCallbackFn callbackSuccessFn, OneSignalPostNotificationCallbackFn callbackFailureFn)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal[26] func: OneSignalPostNotificationWithCallback"));
+
+    if (!_extLoad())
+        return;
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallStart(S3E_TRUE, (void*)g_Ext.m_OneSignalPostNotificationWithCallback);
+#endif
+
+    g_Ext.m_OneSignalPostNotificationWithCallback(jsonData, callbackSuccessFn, callbackFailureFn);
+
+#ifdef LOADER_CALL_LOCK
+    s3eDeviceLoaderCallDone(S3E_TRUE, (void*)g_Ext.m_OneSignalPostNotificationWithCallback);
+#endif
+
+    return;
+}

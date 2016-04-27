@@ -109,9 +109,26 @@ class s3eOneSignal implements NotificationOpenedHandler {
 	public void OneSignalPostNotification(String jsonStr) {
 		OneSignal.postNotification(jsonStr, null);
     }
+
+    public void OneSignalPostNotificationWithCallback(String jsonStr) {
+    	OneSignal.postNotification(jsonStr, new OneSignal.PostNotificationResponseHandler() {
+        	@Override
+            public void onSuccess(JSONObject response) {
+            	PostNotificationSuccessCallback(response == null ? null : response.toString());
+            }
+
+            @Override
+            public void onFailure(JSONObject response) {
+            	PostNotificationFailureCallback(response == null ? null : response.toString());
+            }
+        });
+    }
+
 	
 	public native void NotificationReceivedCallback(String message, String additionalData, boolean isActive);
 	public native void IdsAvailableCallback(String userID, String pushToken);
 	public native void IdsAvailableCallback_GameThrive(String playerID, String pushToken);
 	public native void TagsReceivedCallback(String tags);
+	public native void PostNotificationSuccessCallback(String response);
+	public native void PostNotificationFailureCallback(String response);
 }

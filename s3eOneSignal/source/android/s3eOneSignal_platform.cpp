@@ -19,6 +19,8 @@
 static void NotificationReceivedCallback(JNIEnv* env, jobject _this, jstring m_Message, jstring m_AdditionalData, bool m_isActive);
 static void TagsReceivedCallback(JNIEnv* env, jobject _this, jstring m_Tags);
 static void IdsAvailableCallback(JNIEnv* env, jobject _this, jstring m_PlayerID, jstring m_PushToken);
+static void PostNotificationSuccessCallback(JNIEnv* env, jobject _this, jstring response);
+static void PostNotificationFailureCallback(JNIEnv* env, jobject _this, jstring response);
 
 static jobject g_Obj;
 static jmethodID g_OneSignalInitialize;
@@ -35,6 +37,7 @@ static jmethodID g_OneSignalEnableInAppAlertNotification;
 static jmethodID g_OneSignalEnableNotificationsWhenActive;
 static jmethodID g_OneSignalSetSubscription;
 static jmethodID g_OneSignalPostNotification;
+static jmethodID g_OneSignalPostNotificationWithCallback;
 
 s3eResult s3eOneSignalInit_platform()
 {
@@ -49,6 +52,8 @@ s3eResult s3eOneSignalInit_platform()
 		{"TagsReceivedCallback", "(Ljava/lang/String;)V", (void *)&TagsReceivedCallback},
 		{"IdsAvailableCallback", "(Ljava/lang/String;Ljava/lang/String;)V", (void *)&IdsAvailableCallback},
         {"IdsAvailableCallback_GameThrive", "(Ljava/lang/String;Ljava/lang/String;)V", (void *)&IdsAvailableCallback},
+        {"PostNotificationSuccessCallback", "(Ljava/lang/String;)V", (void *)&PostNotificationSuccessCallback},
+        {"PostNotificationFailureCallback", "(Ljava/lang/String;)V", (void *)&PostNotificationFailureCallback}
 	};
 
     // Get the extension class
@@ -123,6 +128,10 @@ s3eResult s3eOneSignalInit_platform()
 
     g_OneSignalPostNotification = env->GetMethodID(cls, "OneSignalPostNotification", "(Ljava/lang/String;)V");
     if (!g_OneSignalPostNotification)
+        goto fail;
+
+    g_OneSignalPostNotificationWithCallback = env->GetMethodID(cls, "OneSignalPostNotificationWithCallback", "(Ljava/lang/String;)V");
+    if (!g_OneSignalPostNotificationWithCallback)
         goto fail;
 
 
@@ -262,6 +271,42 @@ void IdsAvailableCallback_GameThrive(JNIEnv* env, jobject _this, jstring m_Playe
     //env->ReleaseStringUTFChars(m_PushToken, nativePushTokenStr);
 }
 
+void PostNotificationSuccessCallback(JNIEnv* env, jobject _this, jstring response) {
+    const char* nativeResponseStr = env->GetStringUTFChars(response, 0);
+    
+    OneSignalPostNotificationResult result;
+    result.m_response = nativeResponseStr;
+    
+    s3eEdkCallbacksEnqueue(S3E_DEVICE_ONESIGNAL,
+                            S3E_ONESIGNAL_CALLBACK_POST_NOTIFICATION_SUCCESS,
+                            &result,
+                            sizeof(result),
+                            NULL,
+                            S3E_TRUE); // TRUE, a one shot callback.
+    
+    // TODO: Fix very very small memory leak(1 KiBs or less).
+    //       The line below fixes the leak however then the const char* pointer is invalid to the callback receiver.
+    //env->ReleaseStringUTFChars(response, nativeResponseStr);
+}
+
+void PostNotificationFailureCallback(JNIEnv* env, jobject _this, jstring response) {
+    const char* nativeResponseStr = env->GetStringUTFChars(response, 0);
+    
+    OneSignalPostNotificationResult result;
+    result.m_response = nativeResponseStr;
+    
+    s3eEdkCallbacksEnqueue(S3E_DEVICE_ONESIGNAL,
+                            S3E_ONESIGNAL_CALLBACK_POST_NOTIFICATION_FAILURE,
+                            &result,
+                            sizeof(result),
+                            NULL,
+                            S3E_TRUE); // TRUE, a one shot callback.
+    
+    // TODO: Fix very very small memory leak(1 KiBs or less).
+    //       The line below fixes the leak however then the const char* pointer is invalid to the callback receiver.
+    //env->ReleaseStringUTFChars(response, nativeResponseStr);
+}
+
 void OneSignalSendTag_platform(const char* key, const char* value)
 {
     JNIEnv* env = s3eEdkJNIGetEnv();
@@ -367,4 +412,14 @@ void OneSignalPostNotification_platform(const char* jsonData) {
     JNIEnv* env = s3eEdkJNIGetEnv();
     jstring jsonData_jstr = env->NewStringUTF(jsonData);
     env->CallVoidMethod(g_Obj, g_OneSignalPostNotification, jsonData_jstr);
+}
+
+void OneSignalPostNotificationWithCallback_platform(const char* jsonData, OneSignalPostNotificationCallbackFn callbackSuccessFn, OneSignalPostNotificationCallbackFn callbackFailureFn) {
+    JNIEnv* env = s3eEdkJNIGetEnv();
+    jstring jsonData_jstr = env->NewStringUTF(jsonData);
+
+    EDK_CALLBACK_REG(ONESIGNAL, POST_NOTIFICATION_SUCCESS, (s3eCallback)callbackSuccessFn, NULL, false);
+    EDK_CALLBACK_REG(ONESIGNAL, POST_NOTIFICATION_FAILURE, (s3eCallback)callbackFailureFn, NULL, false);
+
+    env->CallVoidMethod(g_Obj, g_OneSignalPostNotificationWithCallback, jsonData_jstr);
 }

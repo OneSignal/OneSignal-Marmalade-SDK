@@ -120,7 +120,7 @@ void processNotificationOpened() {
     
     if (mAdditionalData)
         result.m_AdditionalData = dictionaryToJsonChar(mAdditionalData);
-    
+
     result.m_isActive = mIsActive;
     
     s3eEdkCallbacksEnqueue(S3E_DEVICE_ONESIGNAL,
@@ -283,4 +283,36 @@ void OneSignalSetSubscription_platform(s3eBool enable) {
 
 void OneSignalPostNotification_platform(const char* jsonData) {
   [oneSignal postNotificationWithJsonString:CreateNSString(jsonData)];
+}
+
+void OneSignalPostNotificationWithCallback_platform(const char* jsonData, OneSignalPostNotificationCallbackFn callbackSuccessFn, OneSignalPostNotificationCallbackFn callbackFailureFn) {
+  EDK_CALLBACK_REG(ONESIGNAL, POST_NOTIFICATION_SUCCESS, (s3eCallback)callbackSuccessFn, NULL, false);
+  EDK_CALLBACK_REG(ONESIGNAL, POST_NOTIFICATION_FAILURE, (s3eCallback)callbackFailureFn, NULL, false);
+
+  [oneSignal postNotificationWithJsonString:CreateNSString(jsonData)
+    onSuccess:^(NSDictionary *response) {
+        OneSignalPostNotificationResult result;
+        result.m_response = dictionaryToJsonChar(response);
+        
+        s3eEdkCallbacksEnqueue(S3E_DEVICE_ONESIGNAL,
+                               S3E_ONESIGNAL_CALLBACK_POST_NOTIFICATION_SUCCESS,
+                               &result,
+                               sizeof(result),
+                               NULL,
+                               S3E_FALSE); // FALSE, not a one shot callback.
+    } onFailure:^(NSError *error) {
+        OneSignalPostNotificationResult result;
+        if (error.userInfo && error.userInfo[@"returned"])
+          result.m_response = dictionaryToJsonChar(error.userInfo[@"returned"]);
+        else
+          result.m_response = "{\"error\": \"HTTP no response error\"}";
+        
+        s3eEdkCallbacksEnqueue(S3E_DEVICE_ONESIGNAL,
+                               S3E_ONESIGNAL_CALLBACK_POST_NOTIFICATION_FAILURE,
+                               &result,
+                               sizeof(result),
+                               NULL,
+                               S3E_FALSE); // FALSE, not a one shot callback.
+        
+    }];
 }

@@ -31,6 +31,7 @@ typedef       void(*OneSignalEnableInAppAlertNotification_t)(s3eBool enable);
 typedef       void(*OneSignalEnableNotificationsWhenActive_t)(s3eBool enable);
 typedef       void(*OneSignalSetSubscription_t)(s3eBool enable);
 typedef       void(*OneSignalPostNotification_t)(const char* jsonData);
+typedef       void(*OneSignalPostNotificationWithCallback_t)(const char* jsonData, OneSignalPostNotificationCallbackFn callbackSuccessFn, OneSignalPostNotificationCallbackFn callbackFailureFn);
 
 /**
  * struct that gets filled in by s3eOneSignalRegister
@@ -63,4 +64,5 @@ typedef struct s3eOneSignalFuncs
     OneSignalEnableNotificationsWhenActive_t m_OneSignalEnableNotificationsWhenActive;
     OneSignalSetSubscription_t m_OneSignalSetSubscription;
     OneSignalPostNotification_t m_OneSignalPostNotification;
+    OneSignalPostNotificationWithCallback_t m_OneSignalPostNotificationWithCallback;
 } s3eOneSignalFuncs;

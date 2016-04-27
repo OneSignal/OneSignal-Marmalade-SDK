@@ -45,6 +45,8 @@ typedef enum s3eOneSignalCallback
 	S3E_ONESIGNAL_CALLBACK_NOTIFICATION_RECEIVED,
 	S3E_ONESIGNAL_CALLBACK_TAGS_RECEIVED,
 	S3E_ONESIGNAL_CALLBACK_IDS_AVAILABLE,
+	S3E_ONESIGNAL_CALLBACK_POST_NOTIFICATION_SUCCESS,
+	S3E_ONESIGNAL_CALLBACK_POST_NOTIFICATION_FAILURE,
 	S3E_ONESIGNAL_CALLBACK_MAX
 } s3eOneSignalCallback;
 
@@ -89,6 +91,11 @@ typedef struct OneSignalIdsAvailableResult
 	const char*	m_PushToken;
 } OneSignalIdsAvailableResult;
 
+typedef struct OneSignalPostNotificationResult
+{
+	const char*	m_response;
+} OneSignalPostNotificationResult;
+
 
 typedef void (*GameThriveNotificationReceivedCallbackFn)(GameThriveNotificationReceivedResult* result, void* userData);
 typedef void (*GameThriveTagsReceivedCallbackFn)(GameThriveTagsReceivedResult* result, void* userData);
@@ -97,6 +104,7 @@ typedef void (*GameThriveIdsAvailableCallbackFn)(GameThriveIdsAvailableResult* r
 typedef void (*OneSignalNotificationReceivedCallbackFn)(OneSignalNotificationReceivedResult* result, void* userData);
 typedef void (*OneSignalTagsReceivedCallbackFn)(OneSignalTagsReceivedResult* result, void* userData);
 typedef void (*OneSignalIdsAvailableCallbackFn)(OneSignalIdsAvailableResult* result, void* userData);
+typedef void (*OneSignalPostNotificationCallbackFn)(OneSignalPostNotificationResult* result, void* userData);
 // \cond HIDDEN_DEFINES
 S3E_BEGIN_C_DECL
 // \endcond
@@ -158,6 +166,8 @@ void OneSignalEnableNotificationsWhenActive(s3eBool enable);
 void OneSignalSetSubscription(s3eBool enable);
 
 void OneSignalPostNotification(const char* jsonData);
+
+void OneSignalPostNotificationWithCallback(const char* jsonData, OneSignalPostNotificationCallbackFn callbackSuccessFn, OneSignalPostNotificationCallbackFn callbackFailureFn);
 
 // \cond HIDDEN_DEFINES
 S3E_END_C_DECL

@@ -180,6 +180,12 @@ static void OneSignalPostNotification_wrap(const char* jsonData)
     s3eEdkThreadRunOnOS((s3eEdkThreadFunc)OneSignalPostNotification, 1, jsonData);
 }
 
+static void OneSignalPostNotificationWithCallback_wrap(const char* jsonData, OneSignalPostNotificationCallbackFn callbackSuccessFn, OneSignalPostNotificationCallbackFn callbackFailureFn)
+{
+    IwTrace(ONESIGNAL_VERBOSE, ("calling s3eOneSignal func on main thread: OneSignalPostNotificationWithCallback"));
+    s3eEdkThreadRunOnOS((s3eEdkThreadFunc)OneSignalPostNotificationWithCallback, 3, jsonData, callbackSuccessFn, callbackFailureFn);
+}
+
 #define GameThriveInitialize GameThriveInitialize_wrap
 
 #define GameThriveSendTag GameThriveSendTag_wrap
@@ -232,13 +238,15 @@ static void OneSignalPostNotification_wrap(const char* jsonData)
 
 #define OneSignalPostNotification OneSignalPostNotification_wrap
 
+#define OneSignalPostNotificationWithCallback OneSignalPostNotificationWithCallback_wrap
+
 
 #endif
 
 void s3eOneSignalRegisterExt()
 {
     /* fill in the function pointer struct for this extension */
-    void* funcPtrs[26];
+    void* funcPtrs[27];
     funcPtrs[0] = (void*)GameThriveInitialize;
     funcPtrs[1] = (void*)GameThriveSendTag;
     funcPtrs[2] = (void*)GameThriveGetTags;
@@ -265,11 +273,12 @@ void s3eOneSignalRegisterExt()
     funcPtrs[23] = (void*)OneSignalEnableNotificationsWhenActive;
     funcPtrs[24] = (void*)OneSignalSetSubscription;
     funcPtrs[25] = (void*)OneSignalPostNotification;
+    funcPtrs[26] = (void*)OneSignalPostNotificationWithCallback;
 
     /*
      * Flags that specify the extension's use of locking and stackswitching
      */
-    int flags[26] = { 0 };
+    int flags[27] = { 0 };
 
     /*
      * Register the extension

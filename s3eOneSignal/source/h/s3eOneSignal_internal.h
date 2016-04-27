@@ -72,6 +72,7 @@ void OneSignalEnableNotificationsWhenActive_platform(s3eBool enable);
 void OneSignalSetSubscription_platform(s3eBool enable);
 
 void OneSignalPostNotification_platform(const char* key);
+void OneSignalPostNotificationWithCallback_platform(const char* key, OneSignalPostNotificationCallbackFn callbackSuccessFn, OneSignalPostNotificationCallbackFn callbackFailureFn);
 
 
 #endif /* !S3EONESIGNAL_INTERNAL_H */

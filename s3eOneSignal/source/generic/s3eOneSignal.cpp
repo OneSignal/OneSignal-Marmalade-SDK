@@ -146,3 +146,8 @@ void OneSignalPostNotification(const char* jsonStr)
 {
 	OneSignalPostNotification_platform(jsonStr);
 }
+
+void OneSignalPostNotificationWithCallback(const char* jsonStr, OneSignalPostNotificationCallbackFn callbackSuccessFn, OneSignalPostNotificationCallbackFn callbackFailureFn)
+{
+	OneSignalPostNotificationWithCallback_platform(jsonStr, callbackSuccessFn, callbackFailureFn);
+}
