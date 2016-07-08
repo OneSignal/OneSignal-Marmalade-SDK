@@ -2,6 +2,7 @@
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 <uses-permission android:name="android.permission.VIBRATE" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 <uses-permission android:name="com.amazon.device.messaging.permission.RECEIVE" />
 
@@ -11,12 +12,21 @@
 <permission android:name="${PACKAGENAME}.permission.RECEIVE_ADM_MESSAGE" android:protectionLevel="signature" />
 <uses-permission android:name="${PACKAGENAME}.permission.RECEIVE_ADM_MESSAGE" />
 
-<!-- START: ShortcutBadger -->
+ <!-- START: ShortcutBadger -->
+<!-- Samsung -->
 <uses-permission android:name="com.sec.android.provider.badge.permission.READ"/>
 <uses-permission android:name="com.sec.android.provider.badge.permission.WRITE"/>
+
+<!-- HTC -->
 <uses-permission android:name="com.htc.launcher.permission.READ_SETTINGS"/>
 <uses-permission android:name="com.htc.launcher.permission.UPDATE_SHORTCUT"/>
+
+<!-- Sony -->
 <uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE"/>
+
+<!-- Apex -->
 <uses-permission android:name="com.anddoes.launcher.permission.UPDATE_COUNT"/>
+
+<!-- Solid -->
 <uses-permission android:name="com.majeur.launcher.permission.UPDATE_BADGE"/>
 <!-- End: ShortcutBadger -->
